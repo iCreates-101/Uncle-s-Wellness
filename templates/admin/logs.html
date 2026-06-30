@@ -1,0 +1,63 @@
+{% include 'partials/header.html' %}
+
+<div class="flex min-h-[calc(100vh-64px)]">
+  {% include 'admin/sidebar.html' %}
+  <div class="flex-1 p-6 overflow-x-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-[#333]"><i class="fas fa-history text-[#6f04c7]"></i> Activity Logs</h1>
+      <span class="text-sm text-[#888]">{{ logs|length }} entries</span>
+    </div>
+
+    {% if logs|length == 0 %}
+      <div class="text-center py-16 text-[#888]">
+        <i class="fas fa-history text-5xl mb-4 text-[#e9d5ff]"></i>
+        <p class="text-lg">No activity logs yet</p>
+      </div>
+    {% else %}
+      <div class="bg-white rounded-xl shadow-sm border border-[#e9d5ff] overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-[#f3e8ff] text-[#888] uppercase text-xs tracking-wider">
+                <th class="text-left px-4 py-3 font-semibold">Time</th>
+                <th class="text-left px-4 py-3 font-semibold">User</th>
+                <th class="text-left px-4 py-3 font-semibold">Action</th>
+                <th class="text-left px-4 py-3 font-semibold">Description</th>
+                <th class="text-left px-4 py-3 font-semibold">Target</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#e9d5ff]">
+              {% for log in logs %}
+                <tr class="hover:bg-[#f3e8ff] transition">
+                  <td class="px-4 py-3 text-[#888] whitespace-nowrap">{{ log.created_at|datetime }}</td>
+                  <td class="px-4 py-3 whitespace-nowrap">{{ log.user_name or '-' }}</td>
+                  <td class="px-4 py-3 whitespace-nowrap">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium
+                      {% if 'create' in log.action or 'checkout' in log.action %}bg-green-50 text-green-700
+                      {% elif 'update' in log.action or 'edit' in log.action %}bg-blue-50 text-blue-700
+                      {% elif 'delete' in log.action %}bg-red-50 text-red-700
+                      {% else %}bg-[#e9d5ff] text-[#888]{% endif %}">
+                      <i class="fas
+                        {% if 'create' in log.action %}fa-plus-circle
+                        {% elif 'update' in log.action or 'edit' in log.action %}fa-edit
+                        {% elif 'delete' in log.action %}fa-trash
+                        {% elif 'checkout' in log.action %}fa-cash-register
+                        {% elif 'login' in log.action %}fa-sign-in-alt
+                        {% else %}fa-circle{% endif %}">
+                      </i>
+                      {{ log.action }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-[#333] max-w-md truncate">{{ log.description }}</td>
+                  <td class="px-4 py-3 text-[#888] whitespace-nowrap">{{ log.target_type or '-' }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}

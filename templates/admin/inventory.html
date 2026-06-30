@@ -1,0 +1,50 @@
+{% include 'partials/header.html' %}
+
+<div class="flex min-h-[calc(100vh-64px)]">
+  {% include 'admin/sidebar.html' %}
+  <div class="flex-1 p-6 overflow-x-auto">
+    <h1 class="text-2xl font-bold text-[#333] mb-6"><i class="fas fa-warehouse text-[#6f04c7]"></i> Inventory Management</h1>
+    <div class="bg-white rounded-xl shadow-sm border border-[#e9d5ff] overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-[#f3e8ff] text-[#888] uppercase text-xs tracking-wider">
+              <th class="text-left px-4 py-3 font-semibold">ID</th>
+              <th class="text-left px-4 py-3 font-semibold">Name</th>
+              <th class="text-left px-4 py-3 font-semibold">Category</th>
+              <th class="text-right px-4 py-3 font-semibold">Stock</th>
+              <th class="text-right px-4 py-3 font-semibold">Price</th>
+              <th class="text-right px-4 py-3 font-semibold">Cost</th>
+              <th class="text-right px-4 py-3 font-semibold">Profit</th>
+              <th class="text-center px-4 py-3 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#e9d5ff]">
+            {% for p in products %}
+              <tr class="hover:bg-[#f3e8ff] transition {{ 'bg-red-50' if p.stock == 0 else 'bg-yellow-50/50' if p.stock < 10 else '' }}">
+                <td class="px-4 py-3 text-[#888] text-xs">{{ p.id }}</td>
+                <td class="px-4 py-3 font-medium text-[#333]">{{ p.name }}</td>
+                <td class="px-4 py-3 text-[#888]">{{ p.category.name if p.category else '-' }}</td>
+                <td class="px-4 py-3 text-right">
+                  <span class="font-semibold {{ 'text-red-600' if p.stock == 0 else 'text-yellow-600' if p.stock < 10 else 'text-[#333]' }}">{{ p.stock }}</span>
+                  {% if p.stock < 10 %}<span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium {% if p.stock == 0 %}bg-red-50 text-red-600{% else %}bg-yellow-50 text-yellow-600{% endif %}">{{ 'Out' if p.stock == 0 else 'Low' }}</span>{% endif %}
+                </td>
+                <td class="px-4 py-3 text-right text-[#333]">{{ p.price|currency }}</td>
+                <td class="px-4 py-3 text-right text-[#888]">{{ (p.cost_price or 0)|currency }}</td>
+                <td class="px-4 py-3 text-right text-[#333]">{{ ((p.price - (p.cost_price or 0)) * p.stock)|currency }}</td>
+                <td class="px-4 py-3 text-center">
+                  <form action="/admin/inventory/update/{{ p.id }}" method="POST" class="flex items-center justify-center gap-2">
+                    <input type="number" name="stock" value="{{ p.stock }}" min="0" class="w-16 px-2 py-1 border border-[#e9d5ff] rounded text-xs outline-none focus:border-[#c084fc]">
+                    <button type="submit" class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[#6f04c7] text-white hover:bg-[#580bbe] transition"><i class="fas fa-save"></i></button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}

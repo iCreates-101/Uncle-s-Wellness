@@ -1,0 +1,172 @@
+{% include 'partials/header.html' %}
+
+<style>
+  .hero-section { width:100%; height:500px; position:relative; overflow:hidden; }
+  .carousel { position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+  .carousel-image { position:absolute; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1s ease-in-out; }
+  .carousel-image.active { opacity:1; }
+  .carousel-controls { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:10; }
+  .carousel-dot { width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,0.5); cursor:pointer; transition:all 0.3s ease; }
+  .carousel-dot.active { background:#fff; transform:scale(1.2); }
+  .carousel-btn { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.3); color:white; border:none; font-size:30px; padding:15px 20px; cursor:pointer; z-index:10; transition:all 0.3s ease; border-radius:5px; }
+  .carousel-btn:hover { background:rgba(255,255,255,0.6); }
+  .carousel-btn.prev { left:20px; }
+  .carousel-btn.next { right:20px; }
+  .hero-content { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color:white; z-index:5; background:rgba(0,0,0,0.4); padding:40px 60px; border-radius:15px; }
+  .hero-content h1 { font-size:48px; margin-bottom:15px; font-family:"Reggae One",cursive; text-shadow:2px 2px 4px rgba(0,0,0,0.5); }
+  .hero-content p { font-size:18px; margin-bottom:25px; text-shadow:1px 1px 3px rgba(0,0,0,0.5); }
+  .hero-btn { display:inline-block; padding:12px 35px; background:linear-gradient(135deg, #667eea 0%, #6f04c7 100%); color:white; text-decoration:none; border-radius:8px; font-weight:700; border:2px solid white; transition:all 0.3s ease; }
+  .hero-btn:hover { background:rgba(255,255,255,0.2); transform:translateY(-2px); }
+  .cards { display:flex; flex-direction:column; align-items:center; margin-bottom:4.8rem; width:100%; }
+  .section-title { background-image:linear-gradient(90deg, #f2bc18, #fffc2e); width:90%; max-width:640px; padding:2.8rem; transform:translateY(2.2rem); text-align:left; border-radius:2.7rem 2.7rem 0 0; }
+  .section-title h2 { color:rgba(0,0,0,0.8); font-family:"Dela Gothic One",cursive; font-size:2rem; padding-bottom:1.5rem; margin-bottom:0; }
+  .category-description { background-image:linear-gradient(90deg, #f2bc18, #fffc2e); color:rgba(0,0,0,0.45); font-family:"Atma",cursive; font-size:1.25rem; padding-top:0; padding-bottom:6.5rem; margin-top:0; border-radius:0 0 2.7rem 2.7rem; }
+  .card-container { display:grid; grid-template-columns:repeat(auto-fit, minmax(350px, 1fr)); gap:2.2rem; margin-top:-4.8rem; margin-bottom:4.8rem; width:90%; max-width:1400px; margin-left:auto; margin-right:auto; }
+  .item-card { background-color:rgba(255,255,255,0.5); width:100%; min-height:550px; padding:2.8rem; display:flex; flex-direction:column; border-radius:1.7rem; box-shadow:0 1.5rem 3rem rgba(0,0,0,0.2); transform:translateY(-1rem); backdrop-filter:blur(1.5rem); transition:transform 0.3s ease,box-shadow 0.3s ease; }
+  .item-card:hover { transform:translateY(-1.5rem); box-shadow:0 2rem 4rem rgba(0,0,0,0.3); }
+  .item-card h3 { font-size:1.75rem; font-weight:bold; margin-bottom:0.5rem; color:#333; }
+  .item-card figure { width:100%; margin-bottom:1rem; display:flex; justify-content:center; align-items:center; overflow:hidden; border-radius:1.5rem; min-height:220px; background:linear-gradient(135deg, #f3e8ff, #e9d5ff); }
+  .item-card figure i { font-size:4rem; color:#6f04c7; }
+  .item-card .description { color:rgba(0,0,0,0.85); background-color:rgba(255,255,255,0.85); padding:0.7rem 0.9rem; margin:0.7rem 0 1rem; border-radius:0.8rem; width:100%; line-height:1.5rem; }
+  .item-card .price { font-size:1.4rem; font-weight:bold; margin-bottom:1.5rem; color:#6f04c7; }
+  .item-card .special { font-size:0.9rem; color:#c98d00; font-weight:600; margin-bottom:0.5rem; }
+  .item-card button { width:100%; color:#d99904; font-size:1.5rem; font-weight:bold; text-shadow:0 -1px #ffc233; background-image:linear-gradient(#ffe46e 0%, #ffd936 30% 80%, #ffcd19 100%); padding:1.4rem; border:solid 1px #c98d00; outline:none; border-radius:2.5rem / 50%; transition:filter 500ms ease-out; }
+  .item-card button:hover { filter:brightness(90%); }
+  @media (max-width: 768px) {
+    .hero-section { height:300px; }
+    .hero-content { padding:25px 30px; }
+    .hero-content h1 { font-size:28px; }
+    .hero-content p { font-size:14px; }
+    .carousel-btn { font-size:20px; padding:10px 15px; }
+    .card-container { grid-template-columns:1fr; }
+  }
+</style>
+
+<div class="hero-section">
+  <div class="carousel">
+    <img src="https://images.unsplash.com/photo-1522335694-2d016482fa7d?w=1200&h=500&fit=crop" alt="Beauty brand showcase" class="carousel-image active">
+    <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=1200&h=500&fit=crop" alt="Beauty brand showcase" class="carousel-image">
+    <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=1200&h=500&fit=crop" alt="Beauty brand showcase" class="carousel-image">
+    <img src="https://images.unsplash.com/photo-1512207736139-f4a9108b47b0?w=1200&h=500&fit=crop" alt="Beauty brand showcase" class="carousel-image">
+    <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&h=500&fit=crop" alt="Beauty brand showcase" class="carousel-image">
+    <button class="carousel-btn prev" onclick="prevSlide()">&#10094;</button>
+    <button class="carousel-btn next" onclick="nextSlide()">&#10095;</button>
+    <div class="carousel-controls">
+      <span class="carousel-dot active" onclick="currentSlide(0)"></span>
+      <span class="carousel-dot" onclick="currentSlide(1)"></span>
+      <span class="carousel-dot" onclick="currentSlide(2)"></span>
+      <span class="carousel-dot" onclick="currentSlide(3)"></span>
+      <span class="carousel-dot" onclick="currentSlide(4)"></span>
+    </div>
+    <div class="hero-content">
+      <h1>Uncle's Wellness</h1>
+      <p>Discover Premium Beauty & Wellness Products</p>
+      <a href="/shop" class="hero-btn">Shop Now</a>
+    </div>
+  </div>
+</div>
+
+<div class="cards">
+  <div class="section-title"><h2>Featured Products</h2></div>
+  <p class="category-description">Our most loved products, handpicked for you.</p>
+  <div class="card-container">
+    {% for p in featured[:3] %}
+    <div class="item-card">
+      <h3>{{ p.name }}</h3>
+      <figure><i class="fas fa-spa"></i></figure>
+      <p class="description">{{ p.description[:120] }}...</p>
+      <p class="price">{{ p.price|currency }}</p>
+      <form action="/cart/add" method="POST">
+        <input type="hidden" name="product_id" value="{{ p.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit" {% if p.stock <= 0 %}disabled style="opacity:0.5"{% endif %}>
+          {% if p.stock <= 0 %}Out of Stock{% else %}<i class="fas fa-shopping-cart"></i> Add to Cart{% endif %}
+        </button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="cards">
+  <div class="section-title"><h2>Skincare Essentials</h2></div>
+  <p class="category-description">Nourish and rejuvenate your skin with our premium skincare range.</p>
+  <div class="card-container">
+    {% for p in featured %}
+      {% if p.category and p.category.name == 'Skincare' %}
+      <div class="item-card">
+        <h3>{{ p.name }}</h3>
+        <figure><i class="fas fa-hand-sparkles"></i></figure>
+        <p class="description">{{ p.description[:120] }}...</p>
+        <p class="price">{{ p.price|currency }}</p>
+        <form action="/cart/add" method="POST">
+          <input type="hidden" name="product_id" value="{{ p.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" {% if p.stock <= 0 %}disabled style="opacity:0.5"{% endif %}>
+            {% if p.stock <= 0 %}Out of Stock{% else %}<i class="fas fa-shopping-cart"></i> Add to Cart{% endif %}
+          </button>
+        </form>
+      </div>
+      {% endif %}
+    {% endfor %}
+    {% for p in featured %}
+      {% if not p.category or p.category.name != 'Skincare' %}
+      <div class="item-card">
+        <h3>{{ p.name }}</h3>
+        <figure><i class="fas fa-hand-sparkles"></i></figure>
+        <p class="description">{{ p.description[:120] }}...</p>
+        <p class="price">{{ p.price|currency }}</p>
+        <form action="/cart/add" method="POST">
+          <input type="hidden" name="product_id" value="{{ p.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" {% if p.stock <= 0 %}disabled style="opacity:0.5"{% endif %}>
+            {% if p.stock <= 0 %}Out of Stock{% else %}<i class="fas fa-shopping-cart"></i> Add to Cart{% endif %}
+          </button>
+        </form>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="cards">
+  <div class="section-title"><h2>Beauty Collection</h2></div>
+  <p class="category-description">Enhance your natural beauty with our curated makeup collection.</p>
+  <div class="card-container">
+    {% for p in featured %}
+    <div class="item-card">
+      <h3>{{ p.name }}</h3>
+      <figure><i class="fas fa-paint-brush"></i></figure>
+      <p class="description">{{ p.description[:120] }}...</p>
+      <p class="price">{{ p.price|currency }}</p>
+      <form action="/cart/add" method="POST">
+        <input type="hidden" name="product_id" value="{{ p.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit" {% if p.stock <= 0 %}disabled style="opacity:0.5"{% endif %}>
+          {% if p.stock <= 0 %}Out of Stock{% else %}<i class="fas fa-shopping-cart"></i> Add to Cart{% endif %}
+        </button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+let slideIdx = 0;
+const slides = document.querySelectorAll('.carousel-image');
+const dots = document.querySelectorAll('.carousel-dot');
+function showSlide(i) {
+  slides.forEach(s=>s.classList.remove('active'));
+  dots.forEach(d=>d.classList.remove('active'));
+  if(i>=slides.length) i=0; else if(i<0) i=slides.length-1;
+  slides[i].classList.add('active');
+  if(dots[i]) dots[i].classList.add('active');
+  slideIdx=i;
+}
+function nextSlide(){ showSlide(slideIdx+1); }
+function prevSlide(){ showSlide(slideIdx-1); }
+function currentSlide(i){ showSlide(i); }
+setInterval(nextSlide, 5000);
+</script>
+
+{% include 'partials/footer.html' %}

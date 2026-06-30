@@ -1,0 +1,59 @@
+{% include 'partials/header.html' %}
+
+<div class="max-w-4xl mx-auto px-6 py-8">
+  <h1 class="text-2xl font-bold text-[#333] mb-6">Order #{{ order.order_number }}</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="bg-white rounded-xl border border-[#e9d5ff] p-5">
+      <h3 class="font-semibold text-[#333] mb-3">Order Information</h3>
+      <div class="space-y-2 text-sm">
+        <p><span class="text-[#888]">Date:</span> <span class="font-medium">{{ order.created_at|datetime }}</span></p>
+        <p><span class="text-[#888]">Status:</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ml-1
+            {% if order.order_status == 'completed' %}bg-green-50 text-green-700
+            {% elif order.order_status == 'confirmed' %}bg-blue-50 text-blue-700
+            {% elif order.order_status == 'cancelled' %}bg-red-50 text-red-700
+            {% else %}bg-yellow-50 text-yellow-700{% endif %}">
+            {{ order.order_status }}
+          </span>
+        </p>
+        <p><span class="text-[#888]">Payment:</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ml-1
+            {% if order.payment_status == 'paid' %}bg-green-50 text-green-700
+            {% elif order.payment_status == 'refunded' %}bg-red-50 text-red-700
+            {% else %}bg-yellow-50 text-yellow-700{% endif %}">
+            {{ order.payment_status }}
+          </span>
+        </p>
+        <p><span class="text-[#888]">Total:</span> <span class="font-bold text-[#6f04c7]">{{ order.total|currency }}</span></p>
+        {% if order.shipping_address %}
+          <p><span class="text-[#888]">Shipping to:</span> {{ order.shipping_address }}</p>
+        {% endif %}
+      </div>
+    </div>
+    <div class="bg-white rounded-xl border border-[#e9d5ff] p-5">
+      <h3 class="font-semibold text-[#333] mb-3">Items</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-[#888] uppercase text-xs tracking-wider">
+              <th class="text-left pb-2 font-semibold">Product</th><th class="text-right pb-2 font-semibold">Price</th><th class="text-center pb-2 font-semibold">Qty</th><th class="text-right pb-2 font-semibold">Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#e9d5ff]">
+            {% for item in items %}
+              <tr><td class="py-2 text-left font-medium">{{ item.product_name }}</td><td class="py-2 text-right">{{ item.price|currency }}</td><td class="py-2 text-center">{{ item.quantity }}</td><td class="py-2 text-right">{{ item.total|currency }}</td></tr>
+            {% endfor %}
+          </tbody>
+          <tfoot class="border-t border-[#e9d5ff]">
+            <tr><td colspan="3" class="pt-2 text-right text-[#888] text-sm">Subtotal</td><td class="pt-2 text-right font-medium">{{ order.subtotal|currency }}</td></tr>
+            <tr><td colspan="3" class="text-right text-[#888] text-sm">Tax</td><td class="text-right font-medium">{{ order.tax|currency }}</td></tr>
+            <tr><td colspan="3" class="text-right font-bold text-[#333]">Total</td><td class="text-right font-bold text-[#6f04c7]">{{ order.total|currency }}</td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}

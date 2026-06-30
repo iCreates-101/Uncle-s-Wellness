@@ -1,0 +1,59 @@
+{% include 'partials/header.html' %}
+
+<div class="max-w-7xl mx-auto px-6 py-8">
+  <h1 class="text-2xl font-bold text-[#333] mb-2">Shopping Cart</h1>
+  <p class="text-sm text-[#888] mb-6">{{ items|length }} item(s) in your cart</p>
+
+  {% if items|length == 0 %}
+    <div class="text-center py-16 text-[#888]">
+      <i class="fas fa-shopping-cart text-5xl mb-4 text-[#e9d5ff]"></i>
+      <h3 class="text-lg font-medium text-[#333]">Your cart is empty</h3>
+      <p class="text-sm mt-1">Looks like you haven't added any products yet</p>
+      <a href="/shop" class="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-[#6f04c7] text-white rounded-lg text-sm font-medium hover:bg-[#580bbe] transition">Start Shopping</a>
+    </div>
+  {% else %}
+    <div class="flex flex-col lg:flex-row gap-8">
+      <div class="flex-1 space-y-4">
+        {% for item in items %}
+          <div class="flex items-center gap-4 bg-white rounded-xl border border-[#e9d5ff] p-4">
+            <div class="w-16 h-16 rounded-lg bg-[#f3e8ff] flex items-center justify-center text-[#c084fc] shrink-0"><i class="fas fa-spa"></i></div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-[#333] text-sm truncate">{{ item.name }}</h3>
+              <p class="text-[#6f04c7] font-bold text-sm mt-0.5">{{ item.price|currency }}</p>
+            </div>
+            <form action="/cart/update" method="POST" class="flex items-center border border-[#e9d5ff] rounded-lg overflow-hidden">
+              <input type="hidden" name="id" value="{{ item.id }}">
+              <button type="button" onclick="this.nextElementSibling.stepDown(); this.closest('form').submit()" class="px-2.5 py-1.5 bg-[#f3e8ff] text-[#333] hover:bg-[#e9d5ff] text-sm">-</button>
+              <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="{{ item.stock }}" class="w-12 text-center border-x border-[#e9d5ff] py-1.5 text-sm outline-none">
+              <button type="button" onclick="this.previousElementSibling.stepUp(); this.closest('form').submit()" class="px-2.5 py-1.5 bg-[#f3e8ff] text-[#333] hover:bg-[#e9d5ff] text-sm">+</button>
+            </form>
+            <div class="text-right min-w-[80px]">
+              <p class="font-semibold text-[#333] text-sm">{{ (item.price * item.quantity)|currency }}</p>
+            </div>
+            <form action="/cart/remove" method="POST">
+              <input type="hidden" name="id" value="{{ item.id }}">
+              <button type="submit" class="text-[#888] hover:text-red-500 transition p-1"><i class="fas fa-trash"></i></button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="lg:w-80 shrink-0">
+        <div class="bg-white rounded-xl border border-[#e9d5ff] p-5 sticky top-20">
+          <h3 class="font-semibold text-lg text-[#333] mb-4">Order Summary</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-[#888]">Subtotal</span><span>{{ subtotal|currency }}</span></div>
+            <div class="flex justify-between"><span class="text-[#888]">Shipping</span><span>{{ 'Free' if subtotal >= 50 else '$5.99' }}</span></div>
+            <div class="flex justify-between"><span class="text-[#888]">Tax (8%)</span><span>{{ (subtotal * 0.08)|currency }}</span></div>
+            {% set shipping = 0 if subtotal >= 50 else 5.99 %}
+            <div class="flex justify-between font-bold text-lg text-[#333] border-t border-[#e9d5ff] pt-2 mt-2"><span>Total</span><span>{{ (subtotal + shipping + subtotal * 0.08)|currency }}</span></div>
+          </div>
+          <a href="/checkout" class="block w-full text-center mt-5 px-4 py-3 bg-[#6f04c7] text-white rounded-lg font-semibold hover:bg-[#580bbe] transition">Proceed to Checkout</a>
+          <a href="/shop" class="block w-full text-center mt-2 px-4 py-2.5 border border-[#e9d5ff] text-[#333] rounded-lg text-sm font-medium hover:bg-[#f3e8ff] transition">Continue Shopping</a>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% include 'partials/footer.html' %}

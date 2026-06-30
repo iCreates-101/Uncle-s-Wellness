@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uncle's Wellness - Beauty & Wellness</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:{50:'#fdf2ef',100:'#fae1d8',200:'#f5c4b1',300:'#efa68a',400:'#e98963',500:'#c4907a',600:'#a8715c',700:'#8a5a48',800:'#6d4536',900:'#503025'},purple:{50:'#f3e8ff',100:'#e9d5ff',200:'#d8b4fe',300:'#c084fc',400:'#a855f7',500:'#6f04c7',600:'#580bbe',700:'#4a0d9e',800:'#3b0d7e',900:'#2d0d5e'}},fontFamily:{reggae:['"Reggae One"','cursive'],oleo:['"Oleo Script"','cursive'],dela:['"Dela Gothic One"','cursive'],atma:['"Atma"','cursive']}}}}}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reggae+One&family=Source+Sans+Pro&family=Oleo+Script&family=Dela+Gothic+One&family=Atma&display=swap">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-[#faf7f5] text-[#333] min-h-screen flex flex-col">
+  <nav class="bg-[#6f04c7] sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center gap-2">
+      <a href="/" class="text-xl font-bold text-white flex items-center gap-2 mr-6 shrink-0">
+        <i class="fas fa-leaf"></i> Uncle's Wellness
+      </a>
+      <button class="lg:hidden text-xl text-white" onclick="document.querySelector('.nav-links').classList.toggle('hidden')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="nav-links hidden lg:flex items-center gap-1 flex-1 justify-end">
+        <a href="/" class="px-3 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition">Home</a>
+        <a href="/shop" class="px-3 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition">Shop</a>
+        <div class="relative group" id="mega-menu">
+          <a href="/shop" class="px-3 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition flex items-center gap-1">
+            Categories <i class="fas fa-caret-down text-xs"></i>
+          </a>
+          <div class="absolute left-1/2 -translate-x-1/2 top-full mt-0 bg-white rounded-xl shadow-xl border border-[#e8ddd9] min-w-[640px] z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-6">
+            <div class="grid grid-cols-3 gap-6">
+              {% for c in categories %}
+                <div>
+                  <a href="/shop?category={{ c.slug }}" class="font-semibold text-sm text-[#6f04c7] hover:text-[#580bbe] transition block mb-2 border-b border-[#f0e8ff] pb-1.5">{{ c.name }}</a>
+                  {% if c._data.parsed_subcats is defined and c._data.parsed_subcats %}
+                    <ul class="space-y-1">
+                      {% for sc in c._data.parsed_subcats %}
+                        <li><a href="/shop?category={{ c.slug }}&subcategory={{ sc[1] }}" class="text-xs text-[#555] hover:text-[#6f04c7] transition block py-0.5">{{ sc[0] }}</a></li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <form class="flex items-center mx-3" action="/shop" method="GET">
+          <input type="text" name="search" placeholder="Search products..." value="{{ currentSearch if currentSearch is defined else '' }}"
+            class="px-3 py-1.5 border border-white/30 rounded-l-lg text-sm bg-white/20 text-white placeholder-white/60 outline-none focus:border-white/60 w-48">
+          <button class="px-3 py-1.5 bg-[#c084fc] text-white rounded-r-lg text-sm hover:bg-[#a855f7] transition"><i class="fas fa-search"></i></button>
+        </form>
+        {% if user and user.role == 'admin' %}
+          <a href="/admin" class="px-3 py-1.5 rounded-lg text-sm font-medium text-white bg-[#4a0d9e] hover:bg-[#3b0d7e] transition"><i class="fas fa-cog"></i> Admin</a>
+        {% endif %}
+        <a href="/cart" class="relative px-3 py-2 text-white hover:text-white/80 transition">
+          <i class="fas fa-shopping-cart"></i>
+          {% if cartCount > 0 %}
+            <span class="absolute -top-0.5 -right-0.5 bg-[#ffd936] text-[#6f04c7] text-[10px] font-bold rounded-full w-4.5 h-4.5 flex items-center justify-center" style="width:18px;height:18px">{{ cartCount }}</span>
+          {% endif %}
+        </a>
+        {% if user %}
+          <div class="relative group">
+            <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition flex items-center gap-1">
+              <i class="fas fa-user"></i> {{ user.name }} <i class="fas fa-caret-down text-xs"></i>
+            </a>
+            <div class="absolute right-0 top-full mt-0 bg-white rounded-lg shadow-lg border border-[#e8ddd9] min-w-[180px] z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+              <a href="/orders" class="block px-4 py-2.5 text-sm text-[#333] hover:bg-[#f3e8ff] transition">My Orders</a>
+              <a href="/logout" class="block px-4 py-2.5 text-sm text-[#333] hover:bg-[#f3e8ff] transition">Logout</a>
+            </div>
+          </div>
+        {% else %}
+          <a href="/login" class="px-3 py-1.5 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition">Login</a>
+          <a href="/register" class="px-4 py-1.5 rounded-lg text-sm font-medium text-[#6f04c7] bg-white hover:bg-[#f3e8ff] transition">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+  <main class="flex-1">

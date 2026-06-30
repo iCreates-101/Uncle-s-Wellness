@@ -1,0 +1,157 @@
+{% include 'partials/header.html' %}
+
+<div class="flex min-h-[calc(100vh-64px)]">
+  {% include 'admin/sidebar.html' %}
+  <div class="flex-1 p-6 overflow-x-auto">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <h1 class="text-2xl font-bold text-[#3d2c2a]"><i class="fas fa-chart-bar text-[#c4907a]"></i> Reports</h1>
+      <div class="flex gap-2">
+        <a href="/admin/reports?period=quarterly" class="px-3 py-1.5 rounded-lg text-sm font-medium transition {% if currentPeriod == 'quarterly' %}bg-[#c4907a] text-white{% else %}bg-white text-[#3d2c2a] border border-[#e8ddd9] hover:bg-[#faf7f5]{% endif %}">Quarterly</a>
+        <a href="/admin/reports?period=six_months" class="px-3 py-1.5 rounded-lg text-sm font-medium transition {% if currentPeriod == 'six_months' %}bg-[#c4907a] text-white{% else %}bg-white text-[#3d2c2a] border border-[#e8ddd9] hover:bg-[#faf7f5]{% endif %}">6 Months</a>
+        <a href="/admin/reports?period=yearly" class="px-3 py-1.5 rounded-lg text-sm font-medium transition {% if currentPeriod == 'yearly' %}bg-[#c4907a] text-white{% else %}bg-white text-[#3d2c2a] border border-[#e8ddd9] hover:bg-[#faf7f5]{% endif %}">Yearly</a>
+      </div>
+    </div>
+
+    <p class="text-sm text-[#8a7a76] mb-6">{{ report.period }} &mdash; {{ report.start|date }} to {{ report.end|date }}</p>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <p class="text-xs uppercase tracking-wider text-[#8a7a76] font-semibold mb-1">Total Orders</p>
+        <p class="text-3xl font-bold text-[#3d2c2a]">{{ report.total_orders }}</p>
+        <p class="text-xs text-[#8a7a76] mt-1">{{ report.pos_orders }} POS / {{ report.online_orders }} Online</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <p class="text-xs uppercase tracking-wider text-[#8a7a76] font-semibold mb-1">Revenue</p>
+        <p class="text-3xl font-bold text-[#3d2c2a]">{{ report.total_revenue|currency }}</p>
+        <p class="text-xs text-[#8a7a76] mt-1">{{ report.total_items_sold }} items sold</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <p class="text-xs uppercase tracking-wider text-[#8a7a76] font-semibold mb-1">Products</p>
+        <p class="text-3xl font-bold text-[#3d2c2a]">{{ report.product_count }}</p>
+        <p class="text-xs text-[#8a7a76] mt-1">{{ report.total_stock }} total stock / {{ report.low_stock_count }} low</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <p class="text-xs uppercase tracking-wider text-[#8a7a76] font-semibold mb-1">Activities</p>
+        <p class="text-3xl font-bold text-[#3d2c2a]">{{ report.total_logs }}</p>
+        <p class="text-xs text-[#8a7a76] mt-1">logged actions</p>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <h3 class="font-semibold text-[#3d2c2a] mb-4"><i class="fas fa-chart-line text-[#c4907a]"></i> Category Breakdown</h3>
+        <canvas id="categoryChart" height="250"></canvas>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <h3 class="font-semibold text-[#3d2c2a] mb-4"><i class="fas fa-trophy text-[#c4907a]"></i> Top Products</h3>
+        <canvas id="topProductsChart" height="250"></canvas>
+      </div>
+    </div>
+
+    <!-- Top Products Table -->
+    {% if report.top_products %}
+    <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] overflow-hidden mb-6">
+      <div class="px-5 py-4 border-b border-[#e8ddd9]">
+        <h3 class="font-semibold text-[#3d2c2a]"><i class="fas fa-crown text-[#c4907a]"></i> Top 10 Products</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-[#faf7f5] text-[#8a7a76] uppercase text-xs tracking-wider">
+              <th class="text-left px-4 py-3 font-semibold">#</th>
+              <th class="text-left px-4 py-3 font-semibold">Product</th>
+              <th class="text-right px-4 py-3 font-semibold">Qty Sold</th>
+              <th class="text-right px-4 py-3 font-semibold">Revenue</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#f0e8e4]">
+            {% for tp in report.top_products %}
+              <tr class="hover:bg-[#faf7f5] transition">
+                <td class="px-4 py-3 text-[#8a7a76]">{{ loop.index }}</td>
+                <td class="px-4 py-3 font-medium text-[#3d2c2a]">{{ tp.name }}</td>
+                <td class="px-4 py-3 text-right">{{ tp.quantity }}</td>
+                <td class="px-4 py-3 text-right">{{ tp.revenue|currency }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Logs -->
+    {% if report.log_entries %}
+    <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] overflow-hidden">
+      <div class="px-5 py-4 border-b border-[#e8ddd9] flex items-center justify-between">
+        <h3 class="font-semibold text-[#3d2c2a]"><i class="fas fa-stream text-[#c4907a]"></i> Recent Activity</h3>
+        <a href="/admin/logs" class="text-sm text-[#c4907a] hover:underline">View All &rarr;</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-[#faf7f5] text-[#8a7a76] uppercase text-xs tracking-wider">
+              <th class="text-left px-4 py-3 font-semibold">Time</th>
+              <th class="text-left px-4 py-3 font-semibold">Action</th>
+              <th class="text-left px-4 py-3 font-semibold">Description</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#f0e8e4]">
+            {% for log in report.log_entries %}
+              <tr class="hover:bg-[#faf7f5] transition">
+                <td class="px-4 py-3 text-[#8a7a76] whitespace-nowrap">{{ log.created_at|datetime }}</td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium
+                    {% if 'create' in log.action or 'checkout' in log.action %}bg-green-50 text-green-700
+                    {% elif 'update' in log.action or 'edit' in log.action %}bg-blue-50 text-blue-700
+                    {% elif 'delete' in log.action %}bg-red-50 text-red-700
+                    {% else %}bg-[#e9d5ff] text-[#888]{% endif %}">
+                    {{ log.action }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-[#3d2c2a] max-w-md truncate">{{ log.description }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const categoryLabels = {{ report.category_breakdown.keys()|list|tojson }};
+const categoryQtys = {{ report.category_breakdown.values()|map(attribute='quantity')|list|tojson }};
+const categoryRev = {{ report.category_breakdown.values()|map(attribute='revenue')|list|tojson }};
+
+const catColors = ['#c4907a','#a8715c','#7a9c8c','#6a8c7c','#5a7c6c','#e98963','#efa68a','#f5c4b1'];
+
+new Chart(document.getElementById('categoryChart'), {
+  type: 'bar',
+  data: {
+    labels: categoryLabels,
+    datasets: [
+      { label: 'Qty Sold', data: categoryQtys, backgroundColor: 'rgba(196,144,122,0.7)', borderColor: '#c4907a', borderWidth: 1 },
+      { label: 'Revenue ($)', data: categoryRev, backgroundColor: 'rgba(122,156,140,0.7)', borderColor: '#7a9c8c', borderWidth: 1 }
+    ]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'top' } } }
+});
+
+const topNames = {{ report.top_products|map(attribute='name')|list|tojson }};
+const topQtys = {{ report.top_products|map(attribute='quantity')|list|tojson }};
+
+new Chart(document.getElementById('topProductsChart'), {
+  type: 'doughnut',
+  data: {
+    labels: topNames,
+    datasets: [{ data: topQtys, backgroundColor: catColors.slice(0, topQtys.length) }]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
+});
+</script>
+
+{% include 'partials/footer.html' %}
