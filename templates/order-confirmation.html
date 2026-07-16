@@ -1,0 +1,41 @@
+{% include 'partials/header.html' %}
+
+<div class="max-w-2xl mx-auto px-6 py-12">
+  <div class="bg-white rounded-xl border border-[#e8ddd9] p-8 text-center">
+    <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+      <i class="fas fa-check-circle text-3xl text-green-600"></i>
+    </div>
+    <h1 class="text-2xl font-bold text-[#3d2c2a]">Order Confirmed!</h1>
+    <p class="text-[#8a7a76] mt-2">Thank you for your purchase. Your order has been placed successfully.</p>
+
+    <div class="bg-[#faf7f5] rounded-lg p-4 mt-6 text-left space-y-1 text-sm">
+      <p><span class="text-[#8a7a76]">Order Number:</span> <span class="font-medium text-[#3d2c2a]">{{ order.order_number }}</span></p>
+      <p><span class="text-[#8a7a76]">Date:</span> <span class="font-medium text-[#3d2c2a]">{{ order.created_at|date }}</span></p>
+      <p><span class="text-[#8a7a76]">Payment Method:</span> <span class="font-medium text-[#3d2c2a]">{{ 'Cash on Delivery' if order.payment_method == 'cod' else order.payment_method }}</span></p>
+      <p><span class="text-[#8a7a76]">Total:</span> <span class="font-bold text-[#c4907a]">{{ order.total|currency }}</span></p>
+    </div>
+
+    <h3 class="font-semibold text-[#3d2c2a] text-left mt-6 mb-3">Order Items</h3>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-[#faf7f5] text-[#8a7a76] uppercase text-xs tracking-wider">
+            <th class="text-left px-3 py-2 font-semibold">Product</th><th class="text-center px-3 py-2 font-semibold">Qty</th><th class="text-right px-3 py-2 font-semibold">Price</th><th class="text-right px-3 py-2 font-semibold">Total</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[#f0e8e4]">
+          {% for item in items %}
+            <tr><td class="px-3 py-2 text-left">{{ item.product_name }}</td><td class="px-3 py-2 text-center">{{ item.quantity }}</td><td class="px-3 py-2 text-right">{{ item.price|currency }}</td><td class="px-3 py-2 text-right">{{ item.total|currency }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-3 mt-8">
+      <a href="/shop" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#c4907a] text-white rounded-lg font-medium hover:bg-[#a8715c] transition">Continue Shopping</a>
+      {% if user %}<a href="/orders" class="inline-flex items-center gap-2 px-5 py-2.5 border border-[#e8ddd9] text-[#3d2c2a] rounded-lg font-medium hover:bg-[#faf7f5] transition">View My Orders</a>{% endif %}
+    </div>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}

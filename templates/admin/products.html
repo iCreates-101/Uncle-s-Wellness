@@ -1,0 +1,50 @@
+{% include 'partials/header.html' %}
+
+<div class="flex min-h-[calc(100vh-64px)]">
+  {% include 'admin/sidebar.html' %}
+  <div class="flex-1 p-6 overflow-x-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-[#3d2c2a]"><i class="fas fa-box text-[#c4907a]"></i> Products</h1>
+      <a href="/admin/products/new" class="inline-flex items-center gap-2 px-4 py-2 bg-[#c4907a] text-white rounded-lg text-sm font-medium hover:bg-[#a8715c] transition"><i class="fas fa-plus"></i> Add Product</a>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-[#faf7f5] text-[#8a7a76] uppercase text-xs tracking-wider">
+              <th class="text-left px-4 py-3 font-semibold">ID</th>
+              <th class="text-left px-4 py-3 font-semibold">Name</th>
+              <th class="text-left px-4 py-3 font-semibold">Category</th>
+              <th class="text-right px-4 py-3 font-semibold">Price</th>
+              <th class="text-right px-4 py-3 font-semibold">Stock</th>
+              <th class="text-center px-4 py-3 font-semibold">Featured</th>
+              <th class="text-center px-4 py-3 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#f0e8e4]">
+            {% for p in products %}
+              <tr class="hover:bg-[#faf7f5] transition {{ 'bg-red-50' if p.stock == 0 else 'bg-yellow-50/50' if p.stock < 10 else '' }}">
+                <td class="px-4 py-3 text-[#8a7a76] text-xs">{{ p.id }}</td>
+                <td class="px-4 py-3 font-medium text-[#3d2c2a]">{{ p.name }}</td>
+                <td class="px-4 py-3 text-[#8a7a76]">{{ p.category.name if p.category else '-' }}</td>
+                <td class="px-4 py-3 text-right text-[#3d2c2a]">{{ p.price|currency }}</td>
+                <td class="px-4 py-3 text-right font-semibold {{ 'text-red-600' if p.stock == 0 else 'text-yellow-600' if p.stock < 10 else 'text-[#3d2c2a]' }}">{{ p.stock }}</td>
+                <td class="px-4 py-3 text-center">{{ 'Yes' if p.featured else 'No' }}</td>
+                <td class="px-4 py-3">
+                  <div class="flex items-center justify-center gap-2">
+                    <a href="/admin/products/edit/{{ p.id }}" class="inline-flex items-center px-2.5 py-1.5 rounded text-xs font-medium bg-[#f0e8e4] text-[#3d2c2a] hover:bg-[#c4907a] hover:text-white transition"><i class="fas fa-edit"></i></a>
+                    <form action="/admin/products/delete/{{ p.id }}" method="POST" onsubmit="return confirm('Delete this product?')" class="inline">
+                      <button type="submit" class="inline-flex items-center px-2.5 py-1.5 rounded text-xs font-medium bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}

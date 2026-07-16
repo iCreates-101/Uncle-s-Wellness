@@ -1,0 +1,105 @@
+{% include 'partials/header.html' %}
+
+<div class="pos-layout flex">
+  <div class="flex-1 flex overflow-hidden">
+    <aside class="pos-sidebar border-r border-[#e8ddd9] bg-white">
+      <div class="p-3 border-b border-[#e8ddd9]">
+        <h3 class="text-sm font-bold text-[#8a7a76] uppercase tracking-wider"><i class="fas fa-cash-register text-[#c4907a]"></i> POS Terminal</h3>
+      </div>
+      <div class="pos-search p-3">
+        <input type="text" id="posSearch" placeholder="Search by name or scan barcode..." autofocus class="w-full px-3 py-2 border border-[#e8ddd9] rounded-lg text-sm outline-none focus:border-[#c4907a] bg-[#faf7f5]">
+        <div id="posSearchResults" class="pos-search-results"></div>
+      </div>
+
+      <div class="pos-categories px-3 pb-2 flex gap-1.5">
+        <button class="cat-btn active px-3 py-1.5 rounded-lg text-xs font-medium bg-[#c4907a] text-white" data-cat="all">All</button>
+        {% for c in categories %}
+          <button class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-[#f0e8e4] text-[#3d2c2a] hover:bg-[#c4907a] hover:text-white transition" data-cat="{{ c.id }}">{{ c.name }}</button>
+        {% endfor %}
+      </div>
+
+      <div class="pos-products" id="posProducts">
+        {% for p in products %}
+          <div class="pos-product" data-id="{{ p.id }}" data-name="{{ p.name }}" data-price="{{ p.price }}" data-stock="{{ p.stock }}" data-cat="{{ p.category_id }}" data-barcode="{{ p.barcode or '' }}">
+            <div class="pos-product-icon"><i class="fas fa-spa"></i></div>
+            <div class="pos-product-info">
+              <span class="pos-product-name">{{ p.name }}</span>
+              <span class="pos-product-price">{{ p.price|currency }}</span>
+              <span class="pos-product-stock">Stock: {{ p.stock }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </aside>
+
+    <div class="pos-main">
+      <div class="pos-cart-header px-4 py-3 border-b border-[#e8ddd9] bg-white flex items-center justify-between">
+        <h3 class="font-semibold text-[#3d2c2a]"><i class="fas fa-shopping-cart text-[#c4907a]"></i> Current Sale</h3>
+        <button id="posClearCart" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash"></i> Clear</button>
+      </div>
+      <div class="pos-cart" id="posCart">
+        <div class="pos-cart-empty">
+          <i class="fas fa-cart-plus"></i>
+          <p>Click products or scan barcode to add items</p>
+        </div>
+      </div>
+
+      <div class="pos-cart-footer border-t border-[#e8ddd9] bg-white">
+        <div class="pos-totals px-4 py-3 space-y-1.5">
+          <div class="flex justify-between text-sm text-[#8a7a76]"><span>Items:</span><span id="posItemCount">0</span></div>
+          <div class="flex justify-between text-sm text-[#8a7a76]"><span>Subtotal:</span><span id="posSubtotal">$0.00</span></div>
+          <div class="flex justify-between text-sm text-[#8a7a76]"><span>Tax (8%):</span><span id="posTax">$0.00</span></div>
+          <div class="flex justify-between text-lg font-bold text-[#3d2c2a] border-t border-[#f0e8e4] pt-1.5"><span>Total:</span><span id="posTotal">$0.00</span></div>
+        </div>
+
+        <div class="pos-customer-info px-4 pb-3 flex gap-2">
+          <input type="text" id="posCustomerName" placeholder="Customer name (optional)" class="flex-1 px-3 py-2 border border-[#e8ddd9] rounded-lg text-sm outline-none focus:border-[#c4907a] bg-[#faf7f5]">
+          <input type="text" id="posCustomerPhone" placeholder="Phone (optional)" class="flex-1 px-3 py-2 border border-[#e8ddd9] rounded-lg text-sm outline-none focus:border-[#c4907a] bg-[#faf7f5]">
+        </div>
+
+        <div class="pos-payment px-4 pb-4">
+          <div class="pos-payment-methods flex gap-2 mb-3">
+            <button class="pay-btn active flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-[#c4907a] text-white" data-method="cash"><i class="fas fa-money-bill"></i> Cash</button>
+            <button class="pay-btn flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-[#f0e8e4] text-[#3d2c2a] hover:bg-[#c4907a] hover:text-white transition" data-method="card"><i class="fas fa-credit-card"></i> Card</button>
+            <button class="pay-btn flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-[#f0e8e4] text-[#3d2c2a] hover:bg-[#c4907a] hover:text-white transition" data-method="transfer"><i class="fas fa-university"></i> Transfer</button>
+          </div>
+          <div class="pos-cash-input mb-3" id="posCashInput">
+            <label class="block text-xs font-medium text-[#8a7a76] mb-1">Amount Tendered ($)</label>
+            <input type="number" id="posAmountTendered" step="0.01" placeholder="0.00" class="w-full px-3 py-2 border border-[#e8ddd9] rounded-lg text-sm outline-none focus:border-[#c4907a] bg-[#faf7f5]">
+            <div id="posChange" class="pos-change"></div>
+          </div>
+          <button id="posCheckout" disabled class="w-full px-4 py-3 bg-[#7a9c8c] text-white rounded-lg text-sm font-bold hover:bg-[#6a8c7c] transition disabled:opacity-50 disabled:cursor-not-allowed">
+            <i class="fas fa-check-circle"></i> Complete Sale
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Receipt Modal -->
+<div id="receiptModal" class="fixed inset-0 z-50 hidden bg-black/40 flex items-center justify-center" style="display:none">
+  <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-[#e8ddd9]">
+      <h2 class="font-bold text-[#3d2c2a]"><i class="fas fa-receipt text-[#c4907a]"></i> Sale Complete</h2>
+      <button class="text-2xl text-[#8a7a76] hover:text-[#3d2c2a]" onclick="document.getElementById('receiptModal').style.display='none'">&times;</button>
+    </div>
+    <div id="receiptContent" class="receipt p-5">
+      <div class="receipt-header text-center mb-4">
+        <h3 class="text-lg font-bold text-[#3d2c2a]">Uncle's Wellness</h3>
+        <p class="text-xs text-[#8a7a76]">123 Wellness Ave, Beauty City</p>
+        <p class="text-xs text-[#8a7a76]">Tel: (555) 123-4567</p>
+        <hr class="my-2 border-[#e8ddd9]">
+      </div>
+      <div id="receiptDetails"></div>
+    </div>
+    <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-[#e8ddd9]">
+      <button onclick="window.print()" class="px-4 py-2 border border-[#e8ddd9] text-[#3d2c2a] rounded-lg text-sm font-medium hover:bg-[#faf7f5] transition"><i class="fas fa-print"></i> Print Receipt</button>
+      <a id="receiptLink" href="#" class="px-4 py-2 border border-[#e8ddd9] text-[#3d2c2a] rounded-lg text-sm font-medium hover:bg-[#faf7f5] transition"><i class="fas fa-external-link-alt"></i> Full Receipt</a>
+      <button onclick="document.getElementById('receiptModal').style.display='none'" class="px-4 py-2 bg-[#c4907a] text-white rounded-lg text-sm font-medium hover:bg-[#a8715c] transition">New Sale</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/pos.js"></script>
+{% include 'partials/footer.html' %}

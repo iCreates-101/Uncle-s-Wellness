@@ -1,0 +1,64 @@
+/* ─── Minimal Tailwind Complement ───────────────────────────── */
+/* Only styles Tailwind cannot easily replace */
+
+/* ─── Custom scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d4c5c0; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #c4907a; }
+
+/* ─── POS specific ─────────────────────────────────────────── */
+.pos-layout { height: calc(100vh - 64px); overflow: hidden; }
+.pos-sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; }
+.pos-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.pos-products { flex: 1; overflow-y: auto; }
+.pos-cart { flex: 1; overflow-y: auto; }
+.pos-categories { overflow-x: auto; }
+
+/* ─── Receipt print ────────────────────────────────────────── */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff !important; }
+  .receipt-print { border: none !important; box-shadow: none !important; padding: 0 !important; }
+}
+
+/* ─── Mobile nav toggle ────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .nav-links { position: absolute; top: 64px; left: 0; right: 0; background: #fff;
+    border-bottom: 1px solid #e8ddd9; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 12px 16px; flex-direction: column; align-items: stretch; }
+  .nav-links form { width: 100%; }
+  .nav-links form input { width: 100%; }
+  .pos-layout { flex-direction: column; height: auto; }
+  .pos-sidebar { width: 100%; max-height: 45vh; }
+  .pos-main { height: auto; }
+}
+
+/* ─── Hero gradient ────────────────────────────────────────── */
+.hero-gradient {
+  background: linear-gradient(135deg, #fae1d8 0%, #f5c4b1 50%, #fdf2ef 100%);
+}
+
+/* ─── Category icons hover ─────────────────────────────────── */
+.category-card:hover i { transform: scale(1.15); }
+.category-card i { transition: transform 0.3s; }
+
+/* ─── Product card image placeholder ───────────────────────── */
+.prod-img-placeholder {
+  background: linear-gradient(135deg, #fae1d8, #f5c4b1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; color: #c4907a;
+}
+
+/* ─── Receipt styles ───────────────────────────────────────── */
+@media print {
+  .navbar, .footer, .admin-sidebar, .no-print { display: none !important; }
+  body { background: #fff !important; }
+  .receipt-print { border: none !important; box-shadow: none !important; padding: 0 !important; }
+}
+
+/* ─── Star rating for reports ──────────────────────────────── */
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.loading-dot { animation: pulse-dot 1.4s infinite; }
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }

@@ -1,0 +1,107 @@
+{% include 'partials/header.html' %}
+
+<section class="hero-gradient rounded-none px-6 py-16 md:py-24">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
+    <div class="flex-1 text-center md:text-left">
+      <h1 class="text-4xl md:text-5xl font-bold text-[#3d2c2a] leading-tight">Natural Beauty, <br><span class="text-[#c4907a]">Radiant You</span></h1>
+      <p class="mt-4 text-[#6d4536] text-lg max-w-lg">Discover premium beauty products crafted with nature's finest ingredients. Glow naturally with Uncle's Wellness.</p>
+      <div class="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
+        <a href="/shop" class="inline-flex items-center gap-2 px-6 py-3 bg-[#c4907a] text-white rounded-lg font-semibold hover:bg-[#a8715c] transition">Shop Now</a>
+        <a href="/shop?category=skincare" class="inline-flex items-center gap-2 px-6 py-3 border-2 border-[#c4907a] text-[#c4907a] rounded-lg font-semibold hover:bg-[#c4907a] hover:text-white transition">Explore Skincare</a>
+      </div>
+    </div>
+    <div class="flex-1 flex justify-center">
+      <div class="w-64 h-64 md:w-80 md:h-80 rounded-full bg-white/60 flex items-center justify-center text-[#c4907a] text-8xl"><i class="fas fa-spa"></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 py-12">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div class="text-center p-6 rounded-xl bg-white border border-[#e8ddd9] hover:shadow-md transition">
+      <i class="fas fa-leaf text-3xl text-[#c4907a]"></i>
+      <h3 class="font-semibold text-[#3d2c2a] mt-3">100% Natural</h3>
+      <p class="text-sm text-[#8a7a76] mt-1">All products made with natural ingredients</p>
+    </div>
+    <div class="text-center p-6 rounded-xl bg-white border border-[#e8ddd9] hover:shadow-md transition">
+      <i class="fas fa-truck text-3xl text-[#c4907a]"></i>
+      <h3 class="font-semibold text-[#3d2c2a] mt-3">Free Shipping</h3>
+      <p class="text-sm text-[#8a7a76] mt-1">On orders over $50</p>
+    </div>
+    <div class="text-center p-6 rounded-xl bg-white border border-[#e8ddd9] hover:shadow-md transition">
+      <i class="fas fa-shield-alt text-3xl text-[#c4907a]"></i>
+      <h3 class="font-semibold text-[#3d2c2a] mt-3">Cruelty Free</h3>
+      <p class="text-sm text-[#8a7a76] mt-1">Never tested on animals</p>
+    </div>
+    <div class="text-center p-6 rounded-xl bg-white border border-[#e8ddd9] hover:shadow-md transition">
+      <i class="fas fa-undo text-3xl text-[#c4907a]"></i>
+      <h3 class="font-semibold text-[#3d2c2a] mt-3">Easy Returns</h3>
+      <p class="text-sm text-[#8a7a76] mt-1">30-day satisfaction guarantee</p>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 py-12">
+  <div class="flex items-center justify-between mb-8">
+    <h2 class="text-2xl font-bold text-[#3d2c2a]">Featured Products</h2>
+    <a href="/shop" class="text-sm text-[#c4907a] hover:underline font-medium">View All <i class="fas fa-arrow-right"></i></a>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% for p in featured %}
+      <div class="bg-white rounded-xl border border-[#e8ddd9] overflow-hidden hover:shadow-md transition">
+        <div class="prod-img-placeholder h-40 relative">
+          <i class="fas fa-spa"></i>
+          {% if p.stock < 10 %}
+            <span class="absolute top-2 right-2 bg-yellow-100 text-yellow-700 text-xs font-medium px-2 py-0.5 rounded">Low Stock</span>
+          {% endif %}
+        </div>
+        <div class="p-4">
+          <span class="text-xs text-[#c4907a] font-medium uppercase tracking-wider">{{ p.category.name if p.category else 'Beauty' }}</span>
+          <h3 class="font-semibold text-[#3d2c2a] mt-1 text-sm leading-tight">{{ p.name }}</h3>
+          <p class="text-lg font-bold text-[#c4907a] mt-2">{{ p.price|currency }}</p>
+          <div class="flex items-center gap-2 mt-3">
+            <form action="/cart/add" method="POST">
+              <input type="hidden" name="product_id" value="{{ p.id }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-[#c4907a] text-white rounded-lg text-xs font-medium hover:bg-[#a8715c] transition" {% if p.stock <= 0 %}disabled{% endif %}>
+                {% if p.stock <= 0 %}Out of Stock{% else %}<i class="fas fa-shopping-cart"></i> Add to Cart{% endif %}
+              </button>
+            </form>
+            <a href="/product/{{ p.slug }}" class="text-xs text-[#c4907a] hover:underline">View Details <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 py-12">
+  <div class="flex items-center justify-between mb-8">
+    <h2 class="text-2xl font-bold text-[#3d2c2a]">Shop by Category</h2>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% set icons = {'skincare': 'hand-sparkles', 'haircare': 'cut', 'makeup': 'paint-brush', 'fragrance': 'spray-can', 'bath-body': 'bath', 'natural-organic': 'seedling'} %}
+    {% for c in categories %}
+      <a href="/shop?category={{ c.slug }}" class="category-card flex items-center gap-4 p-5 bg-white rounded-xl border border-[#e8ddd9] hover:shadow-md transition group">
+        <div class="w-12 h-12 rounded-lg bg-[#fae1d8] flex items-center justify-center text-[#c4907a] text-xl group-hover:scale-110 transition-transform"><i class="fas fa-{{ icons.get(c.slug, 'seedling') }}"></i></div>
+        <div>
+          <h3 class="font-semibold text-[#3d2c2a]">{{ c.name }}</h3>
+          <p class="text-xs text-[#8a7a76]">{{ c.description }}</p>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="bg-[#3d2c2a] text-white px-6 py-16 mt-8">
+  <div class="max-w-2xl mx-auto text-center">
+    <h2 class="text-2xl font-bold">Join Our Wellness Club</h2>
+    <p class="mt-2 text-white/70">Subscribe for exclusive offers, beauty tips, and new product alerts</p>
+    <form class="mt-6 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+      <input type="email" placeholder="Enter your email" required class="flex-1 px-4 py-2.5 rounded-lg text-[#3d2c2a] outline-none">
+      <button type="submit" class="px-6 py-2.5 bg-[#c4907a] text-white rounded-lg font-medium hover:bg-[#a8715c] transition">Subscribe</button>
+    </form>
+  </div>
+</section>
+
+{% include 'partials/footer.html' %}

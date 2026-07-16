@@ -1,40 +1,33 @@
-# Uncle's Wellness ✨
+# Uncle's Wellness
 
-A modern beauty & wellness e-commerce platform built for smooth shopping, secure transactions, and a clean user experience.
+I'm working on a website with a plain HTML/CSS frontend and a FastAPI backend. I need you to fix errors, connect the database to Firebase, push the code to GitHub, and deploy to Vercel. Go step by step and ask me before making any account-specific or credential-related decisions.
 
-## 🌸 Features
+1. FIX ERRORS
+   - Go through the FastAPI backend and identify errors: broken imports, missing dependencies in requirements.txt, incorrect route definitions, unhandled exceptions, CORS issues, etc.
+   - Go through the HTML/CSS frontend and check for broken links, missing assets, console errors, and broken API calls to the backend (check the fetch/AJAX URLs match the FastAPI routes).
+   - Run the backend locally (uvicorn) and confirm all endpoints respond correctly.
+   - Open the frontend and confirm it loads and communicates with the backend without errors.
+   - Fix any CORS configuration issues in FastAPI (add CORSMiddleware if missing) since frontend and backend will be deployed separately.
 
-* 🔐 **Full Authentication System**
-  Secure sign up, login, account verification, and user management.
+2. DATABASE — FIREBASE
+   - Set up Firebase (ask me whether to use Firestore or Realtime Database if not already decided — I'd recommend Firestore for most cases).
+   - Install and configure the Firebase Admin SDK in the FastAPI backend.
+   - Use a service account key loaded via environment variables (never hardcoded) for authentication.
+   - Migrate/connect any existing database logic (SQL, JSON files, etc.) to Firestore.
+   - Confirm reads/writes work correctly by testing at least one endpoint end-to-end.
 
-* 💄 **Modern & Responsive UI**
-  Beautiful, intuitive, and mobile-friendly interface designed for effortless navigation.
+3. PUSH TO GITHUB
+   - Initialize git if not already done, and make sure .env, service account keys, and other secrets are in .gitignore.
+   - Create clear, logical commits describing the fixes and Firebase integration.
+   - Push to my GitHub repository (ask me for the repo URL, or whether to create a new one).
 
-* 🛒 **Complete E-Commerce Functionality**
-  From browsing products to checkout — everything works seamlessly.
+4. DEPLOY TO VERCEL
+   - Since Vercel is frontend/serverless-first, structure the project so:
+     a) The HTML/CSS frontend deploys as a static site on Vercel.
+     b) The FastAPI backend deploys as a Vercel serverless function (using a vercel.json config and an ASGI-compatible entry point, e.g. via mangum or Vercel's native Python runtime).
+   - Set up all required environment variables in Vercel (Firebase credentials, API keys, etc.) — do not hardcode secrets.
+   - Update frontend API calls to point to the deployed backend URL.
+   - Confirm the production deployment builds and both frontend and backend work correctly live.
+   - Share the final deployment URL(s).
 
-* 💳 **Integrated Payments**
-  Supports both **Mobile Money** and **Bank Payments** for flexible transactions.
-
-* 💱 **Real-Time Currency Conversion**
-  Instantly convert between **USD ↔ TZS** for a localized shopping experience.
-
-* ☁️ **Firebase Backend & Database**
-  Fast, scalable, and reliable cloud-powered infrastructure.
-
-* 🧾 **POS System Included**
-  Built-in Point of Sale system for managing in-store and online sales together.
-
-* ⚡ **Robust Backend Logic**
-  Fully functional backend handling products, users, orders, payments, and more.
-
-## 🚀 Tech Stack
-
-* Frontend: HTML and TailwindCSS
-* Backend: FastAPI (Python Framework)
-* Database: Firebase
-* Payments: Mobile Money + Bank APIs
-
-## 🌿 Vision
-
-Uncle's Wellness is more than just an online beauty store — it's a seamless digital wellness shopping experience combining elegance, accessibility, and smart technology.
+Go through this step by step, show me what you're doing and why at each stage, and pause to ask if you hit a decision point (Firestore vs Realtime DB, repo name, missing credentials, etc.). Don't guess on anything involving credentials or account settings — ask me instead.

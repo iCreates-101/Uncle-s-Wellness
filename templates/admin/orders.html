@@ -1,0 +1,64 @@
+{% include 'partials/header.html' %}
+
+<div class="flex min-h-[calc(100vh-64px)]">
+  {% include 'admin/sidebar.html' %}
+  <div class="flex-1 p-6 overflow-x-auto">
+    <h1 class="text-2xl font-bold text-[#3d2c2a] mb-6"><i class="fas fa-truck text-[#c4907a]"></i> Orders</h1>
+    <div class="flex flex-wrap gap-2 mb-6">
+      <a href="/admin/orders" class="px-3 py-1.5 rounded-lg text-sm font-medium transition {% if not currentStatus %}bg-[#c4907a] text-white{% else %}bg-white text-[#3d2c2a] border border-[#e8ddd9] hover:bg-[#faf7f5]{% endif %}">All</a>
+      <a href="/admin/orders?status=pending" class="px-3 py-1.5 rounded-lg text-sm font-medium transition {% if currentStatus == 'pending' %}bg-yellow-500 text-white{% else %}bg-white text-[#3d2c2a] border border-[#e8ddd9] hover:bg-[#faf7f5]{% endif %}">Pending</a>
+      <a href="/admin/orders?status=confirmed" class="px-3 py-1.5 rounded-lg text-sm font-medium transition {% if currentStatus == 'confirmed' %}bg-blue-500 text-white{% else %}bg-white text-[#3d2c2a] border border-[#e8ddd9] hover:bg-[#faf7f5]{% endif %}">Confirmed</a>
+      <a href="/admin/orders?status=completed" class="px-3 py-1.5 rounded-lg text-sm font-medium transition {% if currentStatus == 'completed' %}bg-green-600 text-white{% else %}bg-white text-[#3d2c2a] border border-[#e8ddd9] hover:bg-[#faf7f5]{% endif %}">Completed</a>
+      <a href="/admin/orders?status=cancelled" class="px-3 py-1.5 rounded-lg text-sm font-medium transition {% if currentStatus == 'cancelled' %}bg-red-500 text-white{% else %}bg-white text-[#3d2c2a] border border-[#e8ddd9] hover:bg-[#faf7f5]{% endif %}">Cancelled</a>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-[#faf7f5] text-[#8a7a76] uppercase text-xs tracking-wider">
+              <th class="text-left px-4 py-3 font-semibold">Order #</th>
+              <th class="text-left px-4 py-3 font-semibold">Customer</th>
+              <th class="text-center px-4 py-3 font-semibold">Source</th>
+              <th class="text-right px-4 py-3 font-semibold">Total</th>
+              <th class="text-left px-4 py-3 font-semibold">Status</th>
+              <th class="text-left px-4 py-3 font-semibold">Payment</th>
+              <th class="text-left px-4 py-3 font-semibold">Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#f0e8e4]">
+            {% for o in orders %}
+              <tr class="hover:bg-[#faf7f5] transition">
+                <td class="px-4 py-3"><a href="/admin/orders/{{ o.id }}" class="text-[#c4907a] hover:underline font-medium">{{ o.order_number }}</a></td>
+                <td class="px-4 py-3 text-[#3d2c2a]">{{ o.customer_name }}</td>
+                <td class="px-4 py-3 text-center">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ 'bg-[#f0e8e4] text-[#8a7a76]' if o.pos_order else 'bg-blue-50 text-blue-600' }}">{{ 'POS' if o.pos_order else 'Online' }}</span>
+                </td>
+                <td class="px-4 py-3 text-right text-[#3d2c2a]">{{ o.total|currency }}</td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                    {% if o.order_status == 'completed' %}bg-green-50 text-green-700
+                    {% elif o.order_status == 'confirmed' %}bg-blue-50 text-blue-700
+                    {% elif o.order_status == 'cancelled' %}bg-red-50 text-red-700
+                    {% else %}bg-yellow-50 text-yellow-700{% endif %}">
+                    {{ o.order_status }}
+                  </span>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                    {% if o.payment_status == 'paid' %}bg-green-50 text-green-700
+                    {% elif o.payment_status == 'refunded' %}bg-red-50 text-red-700
+                    {% else %}bg-yellow-50 text-yellow-700{% endif %}">
+                    {{ o.payment_status }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-[#8a7a76]">{{ o.created_at|date }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}
