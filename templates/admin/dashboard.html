@@ -1,0 +1,91 @@
+{% include 'partials/header.html' %}
+
+<div class="flex min-h-[calc(100vh-64px)]">
+  {% include 'admin/sidebar.html' %}
+  <div class="flex-1 p-6 overflow-x-auto">
+    <h1 class="text-2xl font-bold text-[#3d2c2a] mb-6"><i class="fas fa-tachometer-alt text-[#c4907a]"></i> Dashboard</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-[#f5c4b1] flex items-center justify-center text-white"><i class="fas fa-box"></i></div>
+          <div><h3 class="text-2xl font-bold text-[#3d2c2a]">{{ stats.products }}</h3><p class="text-xs text-[#8a7a76]">Total Products</p></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-[#7a9c8c] flex items-center justify-center text-white"><i class="fas fa-shopping-cart"></i></div>
+          <div><h3 class="text-2xl font-bold text-[#3d2c2a]">{{ stats.orders }}</h3><p class="text-xs text-[#8a7a76]">Total Orders</p></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-[#c4907a] flex items-center justify-center text-white"><i class="fas fa-dollar-sign"></i></div>
+          <div><h3 class="text-2xl font-bold text-[#3d2c2a]">{{ stats.revenue|currency }}</h3><p class="text-xs text-[#8a7a76]">Total Revenue</p></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-[#a8715c] flex items-center justify-center text-white"><i class="fas fa-users"></i></div>
+          <div><h3 class="text-2xl font-bold text-[#3d2c2a]">{{ stats.customers }}</h3><p class="text-xs text-[#8a7a76]">Customers</p></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-[#e98963] flex items-center justify-center text-white"><i class="fas fa-exclamation-triangle"></i></div>
+          <div><h3 class="text-2xl font-bold text-[#3d2c2a]">{{ stats.lowStock }}</h3><p class="text-xs text-[#8a7a76]">Low Stock Items</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] p-5 mb-6">
+      <h2 class="text-lg font-bold text-[#3d2c2a] mb-4">Quick Actions</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <a href="/admin/pos" class="flex items-center gap-2 px-4 py-3 rounded-lg bg-[#faf7f5] hover:bg-[#f5c4b1] hover:text-white transition text-sm font-medium text-[#3d2c2a]"><i class="fas fa-cash-register"></i> POS Terminal</a>
+        <a href="/admin/products/new" class="flex items-center gap-2 px-4 py-3 rounded-lg bg-[#faf7f5] hover:bg-[#7a9c8c] hover:text-white transition text-sm font-medium text-[#3d2c2a]"><i class="fas fa-plus-circle"></i> Add Product</a>
+        <a href="/admin/orders" class="flex items-center gap-2 px-4 py-3 rounded-lg bg-[#faf7f5] hover:bg-[#c4907a] hover:text-white transition text-sm font-medium text-[#3d2c2a]"><i class="fas fa-truck"></i> Manage Orders</a>
+        <a href="/admin/inventory" class="flex items-center gap-2 px-4 py-3 rounded-lg bg-[#faf7f5] hover:bg-[#a8715c] hover:text-white transition text-sm font-medium text-[#3d2c2a]"><i class="fas fa-warehouse"></i> Inventory</a>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-[#e8ddd9] overflow-hidden">
+      <div class="px-5 py-4 border-b border-[#e8ddd9]">
+        <h2 class="text-lg font-bold text-[#3d2c2a]">Recent Orders</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-[#faf7f5] text-[#8a7a76] uppercase text-xs tracking-wider">
+              <th class="text-left px-4 py-3 font-semibold">Order #</th>
+              <th class="text-left px-4 py-3 font-semibold">Customer</th>
+              <th class="text-right px-4 py-3 font-semibold">Total</th>
+              <th class="text-left px-4 py-3 font-semibold">Status</th>
+              <th class="text-left px-4 py-3 font-semibold">Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#f0e8e4]">
+            {% for o in stats.recentOrders %}
+              <tr class="hover:bg-[#faf7f5] transition">
+                <td class="px-4 py-3"><a href="/admin/orders/{{ o.id }}" class="text-[#c4907a] hover:underline font-medium">{{ o.order_number }}</a></td>
+                <td class="px-4 py-3 text-[#3d2c2a]">{{ o.customer_name }}</td>
+                <td class="px-4 py-3 text-right text-[#3d2c2a]">{{ o.total|currency }}</td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                    {% if o.order_status == 'completed' %}bg-green-50 text-green-700
+                    {% elif o.order_status == 'confirmed' %}bg-blue-50 text-blue-700
+                    {% elif o.order_status == 'cancelled' %}bg-red-50 text-red-700
+                    {% else %}bg-yellow-50 text-yellow-700{% endif %}">
+                    {{ o.order_status }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-[#8a7a76]">{{ o.created_at|date }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}

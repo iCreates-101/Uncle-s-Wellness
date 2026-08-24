@@ -1,0 +1,26 @@
+{% include 'partials/header.html' %}
+
+<div class="min-h-[60vh] flex items-center justify-center px-6 py-12">
+  <div class="w-full max-w-md bg-white rounded-xl border border-[#e8ddd9] p-8">
+    <div class="text-center mb-6">
+      <i class="fas fa-leaf text-4xl text-[#c4907a]"></i>
+      <h2 class="text-2xl font-bold text-[#3d2c2a] mt-2">Welcome Back</h2>
+      <p class="text-sm text-[#8a7a76]">Sign in to your account</p>
+    </div>
+    {% if error %}<div class="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">{{ error }}</div>{% endif %}
+    <form action="/login" method="POST" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-[#3d2c2a] mb-1">Email</label>
+        <input type="email" name="email" placeholder="your@email.com" required class="w-full px-3 py-2 border border-[#e8ddd9] rounded-lg text-sm outline-none focus:border-[#c4907a] bg-[#faf7f5]">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-[#3d2c2a] mb-1">Password</label>
+        <input type="password" name="password" placeholder="Enter your password" required class="w-full px-3 py-2 border border-[#e8ddd9] rounded-lg text-sm outline-none focus:border-[#c4907a] bg-[#faf7f5]">
+      </div>
+      <button type="submit" class="w-full px-4 py-2.5 bg-[#c4907a] text-white rounded-lg font-medium hover:bg-[#a8715c] transition">Sign In</button>
+    </form>
+    <p class="text-center text-sm text-[#8a7a76] mt-4">Don't have an account? <a href="/register" class="text-[#c4907a] hover:underline font-medium">Register here</a></p>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}
