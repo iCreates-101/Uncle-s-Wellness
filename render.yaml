@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: uncles-wellness
+    runtime: python
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips=*
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: SESSION_SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: https://uncles-wellness.vercel.app,http://localhost:3000,http://localhost:8000
+      # ── Firebase (Firestore) service-account credentials ──────────────
+      # Set these in the Render Dashboard -> Environment after the service
+      # is created (Render prompts for values because sync: false).
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY_ID
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_CLIENT_ID
+        sync: false

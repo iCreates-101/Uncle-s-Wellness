@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Databases (SQLite fallback)
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+
+# Secrets
+.env
+.env.*
+firebase-credentials.json
+serviceAccountKey.json
+*.pem
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Presentations / binaries (repo assets, not web assets)
+*.pptx
+
+# Deployment metadata
+.vercel

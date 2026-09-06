@@ -1,0 +1,3 @@
+# Only deploy the Vercel proxy config — everything else lives on Render.
+*
+!vercel.json
