@@ -13,7 +13,7 @@
           <div class="text-sm text-left space-y-0.5">
             <p><span class="text-[#8a7a76]">Order:</span> <span class="font-medium">{{ order.order_number }}</span></p>
             <p><span class="text-[#8a7a76]">Date:</span> <span class="font-medium">{{ order.created_at|datetime }}</span></p>
-            <p><span class="text-[#8a7a76]">Cashier:</span> <span class="font-medium">{{ order.user_id or 'Admin' }}</span></p>
+            <p><span class="text-[#8a7a76]">Cashier:</span> <span class="font-medium">{{ cashier_name }}</span></p>
             <p><span class="text-[#8a7a76]">Customer:</span> <span class="font-medium">{{ order.customer_name }}</span></p>
           </div>
           <hr class="my-2 border-[#e8ddd9]">

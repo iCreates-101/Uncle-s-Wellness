@@ -5,7 +5,7 @@ import string
 
 from fastapi import Request
 
-from firebase_db import get_all_categories, get_cart_count
+from supabase_db import get_all_categories, get_cart_count
 
 
 def get_common_context(request: Request, _db=None):

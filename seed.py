@@ -1,9 +1,9 @@
 """Standalone seed script — run with: python seed.py
 
-Requires Firebase credentials (see firebase_db.py for setup).
+Seeds Supabase (or the local SQLite fallback) with demo data.
 """
-from firebase_db import init_firebase, seed_database
+from supabase_db import init_db, seed_database
 
-init_firebase()
+init_db()
 seed_database()
 print("Database seeded!  Admin: admin@uncleswellness.com / admin123")

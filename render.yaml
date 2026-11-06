@@ -14,16 +14,7 @@ services:
         generateValue: true
       - key: ALLOWED_ORIGINS
         value: https://uncles-wellness.vercel.app,http://localhost:3000,http://localhost:8000
-      # ── Firebase (Firestore) service-account credentials ──────────────
-      # Set these in the Render Dashboard -> Environment after the service
-      # is created (Render prompts for values because sync: false).
-      - key: FIREBASE_PROJECT_ID
+      - key: SUPABASE_URL
         sync: false
-      - key: FIREBASE_PRIVATE_KEY_ID
-        sync: false
-      - key: FIREBASE_PRIVATE_KEY
-        sync: false
-      - key: FIREBASE_CLIENT_EMAIL
-        sync: false
-      - key: FIREBASE_CLIENT_ID
+      - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false

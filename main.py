@@ -9,14 +9,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
-from firebase_db import init_firebase, seed_database as fb_seed
+from supabase_db import init_db, seed_database as fb_seed
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_firebase()
+    init_db()
     try:
-        from firebase_db import get_all_products
+        from supabase_db import get_all_products
         if len(get_all_products(active_only=False)) == 0:
             fb_seed()
     except Exception:

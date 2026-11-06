@@ -15,8 +15,6 @@ venv/
 # Secrets
 .env
 .env.*
-firebase-credentials.json
-serviceAccountKey.json
 *.pem
 
 # OS / editor

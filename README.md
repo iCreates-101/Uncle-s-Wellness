@@ -1,6 +1,6 @@
 # Uncle's Wellness
 
-Beauty & wellness storefront built with **FastAPI** (server-rendered pages + JSON API) on a **Firebase Firestore** database, with a SQLite fallback for local demo mode.
+Beauty & wellness storefront built with **FastAPI** (server-rendered pages + JSON API) on a **Supabase** (Postgres) database, with a SQLite fallback for local demo mode.
 
 ## Architecture
 
@@ -11,7 +11,7 @@ Browser
 https://uncles-wellness.vercel.app        ← Vercel front door (reverse proxy)
    │  vercel.json rewrites "/:path*"
    ▼
-https://uncles-wellness.onrender.com      ← Render backend (FastAPI + Firestore)
+https://uncles-wellness.onrender.com      ← Render backend (FastAPI + Supabase)
 ```
 
 - The whole application (HTML pages, static assets, and API) is served by FastAPI on **Render**.
@@ -24,7 +24,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 3000
 ```
 
-Open http://localhost:3000. Without Firebase credentials the app falls back to the local SQLite file.
+Open http://localhost:3000. Without Supabase credentials the app falls back to the local SQLite file.
 
 ## Deploying
 
@@ -50,15 +50,12 @@ After creating the service, set these environment variables (Dashboard → Envir
 | --- | --- |
 | `SESSION_SECRET_KEY` | Random secret (Blueprint generates one automatically). |
 | `ALLOWED_ORIGINS` | Comma-separated allowed origins, e.g. `https://uncles-wellness.vercel.app,http://localhost:3000`. |
-| `FIREBASE_PROJECT_ID` | Firebase project id. |
-| `FIREBASE_PRIVATE_KEY_ID` | Service-account private key id. |
-| `FIREBASE_PRIVATE_KEY` | Service-account private key (with literal `\n` line breaks). |
-| `FIREBASE_CLIENT_EMAIL` | Service-account client email. |
-| `FIREBASE_CLIENT_ID` | Service-account client id. |
+| `SUPABASE_URL` | Your Supabase project URL, e.g. `https://xyzxyz.supabase.co`. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service-role (secret) key from Supabase → Settings → API. |
 
-> These are the same Firestore credential variables already supported by `firebase_db.py` (which reads them when no `GOOGLE_APPLICATION_CREDENTIALS` path or local `firebase-credentials.json` file is present). Only the `FIREBASE_*` set is needed on Render.
+> The database layer (`supabase_db.py`) reads `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` (falling back to `SUPABASE_ANON_KEY` or `SUPABASE_KEY`). When they are not set, the app uses the local SQLite fallback. Run the schema from `supabase_schema.sql` in the Supabase SQL editor before first deploy.
 
-The app seeds Firestore with sample products on first boot when the `products` collection is empty. Seed admin login: `admin@uncleswellness.com` / `admin123` (change in production).
+The app seeds Supabase with sample products on first boot when the `products` table is empty. Seed admin login: `admin@uncleswellness.com` / `admin123` (change in production).
 
 ### 2. Vercel (front door / proxy)
 
